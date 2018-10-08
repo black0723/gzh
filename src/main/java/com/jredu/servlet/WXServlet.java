@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.jredu.util.CheckUtil;
 import com.jredu.util.MessageUtil;
+import com.jredu.util.XmlUtil;
 
 @WebServlet("/WXServlet")
 public class WXServlet extends HttpServlet {
@@ -53,14 +54,9 @@ public class WXServlet extends HttpServlet {
 			} else {
 				// 将request请求，传到Message工具类的转换方法中，返回接收到的Map对象
 				try {
-					Map<String, String> map = MessageUtil.xmlToMap(request);
-					// 从集合中，获取XML各个节点的内容
-					String ToUserName = map.get("ToUserName");
-					String FromUserName = map.get("FromUserName");
-					String CreateTime = map.get("CreateTime");
-					String MsgType = map.get("MsgType");
-					String Content = map.get("Content");
-					String MsgId = map.get("MsgId ");
+					//微信返回来的xml数据
+					Map<String, String> map = XmlUtil.xmlToMap(request);
+					
 					System.out.println("Content-->" + Content);
 
 					String message = null;
@@ -84,6 +80,7 @@ public class WXServlet extends HttpServlet {
 							message = MessageUtil.initText(ToUserName, FromUserName, MessageUtil.menuText());
 						}
 					}
+					//我们提交给微信的xml
 					System.out.println("message-->" + message);
 					out.println(message);
 				} catch (Exception e) {

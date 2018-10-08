@@ -14,6 +14,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.jredu.entity.BaseMessage;
 import com.jredu.entity.TextMessage;
 import com.thoughtworks.xstream.XStream;
 
@@ -34,60 +35,157 @@ public class MessageUtil {
 	public static final String MESSAGE_SCAN = "SCAN";
 
 	/**
+	 * 消息模板
 	 * 
-	 * 将XML转为MAP集合
-	 * 
-	 * @param request
-	 * 
+	 * @param message
 	 * @return
-	 * 
-	 * @throws IOException
-	 * 
-	 * @throws DocumentException
-	 * 
 	 */
+	public static String msgTemplate(Map<String, String> map) {
+		// 从集合中，获取XML各个节点的内容
+		String toUserName = map.get("ToUserName");
+		String fromUserName = map.get("FromUserName");
+		String createTime = map.get("CreateTime");
+		String msgType = map.get("MsgType");
+		String content = map.get("Content");
+		String msgId = map.get("MsgId ");
 
-	public static Map<String, String> xmlToMap(HttpServletRequest request) throws Exception {
-		Map<String, String> map = new HashMap<String, String>();
-		SAXReader reader = new SAXReader();
+		if (MESSAGE_TEXT.equals(msgType)) {
+			TextMessage message = new TextMessage(toUserName, fromUserName, new Date().getTime(), msgType);
+			message.setContent(content);
+			return XmlUtil.textMessageToXml(message);
+		} else if (MESSAGE_IMAGE.equals(msgType)) {
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("<xml>");
+			buffer.append("<ToUserName>");
+			buffer.append("<![CDATA["+toUserName+"]]>");
+			buffer.append("</ToUserName>");
+			
+			buffer.append("<FromUserName>");
+			buffer.append("<![CDATA["+fromUserName+"]]>");
+			buffer.append("</FromUserName>");
+			
+			buffer.append("<CreateTime>");
+			buffer.append("<![CDATA["+new Date().getTime()+"]]>");
+			buffer.append("</CreateTime>");
+			
+			buffer.append("<MsgType>");
+			buffer.append("<![CDATA[image]]>");
+			buffer.append("</MsgType>");
 
-		// 从request对象中获取输入流
-		InputStream ins = request.getInputStream();
+			buffer.append("<Image>");
+			buffer.append("<MediaId>");
+			buffer.append("<![CDATA["+fromUserName+"]]>");
+			buffer.append("</MediaId>");
+			buffer.append("</Image>");
+			buffer.append("</xml>");
+			return buffer.toString();
+		} else if (MESSAGE_TEXT.equals(msgType)) {
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("<xml>");
+			buffer.append("<ToUserName>");
+			buffer.append("<![CDATA["+toUserName+"]]>");
+			buffer.append("</ToUserName>");
+			
+			buffer.append("<FromUserName>");
+			buffer.append("<![CDATA["+fromUserName+"]]>");
+			buffer.append("</FromUserName>");
+			
+			buffer.append("<CreateTime>");
+			buffer.append("<![CDATA["+new Date().getTime()+"]]>");
+			buffer.append("</CreateTime>");
+			
+			buffer.append("<MsgType>");
+			buffer.append("<![CDATA[image]]>");
+			buffer.append("</MsgType>");
 
-		// 使用reader对象读取输入流,解析为XML文档
-		Document doc = reader.read(ins);
+			buffer.append("<Image>");
+			buffer.append("<MediaId>");
+			buffer.append("<![CDATA["+fromUserName+"]]>");
+			buffer.append("</MediaId>");
+			buffer.append("</Image>");
+			buffer.append("</xml>");
+			return buffer.toString();
+		} else if (MESSAGE_TEXT.equals(msgType)) {
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("<xml>");
+			buffer.append("<ToUserName>");
+			buffer.append("<![CDATA["+toUserName+"]]>");
+			buffer.append("</ToUserName>");
+			
+			buffer.append("<FromUserName>");
+			buffer.append("<![CDATA["+fromUserName+"]]>");
+			buffer.append("</FromUserName>");
+			
+			buffer.append("<CreateTime>");
+			buffer.append("<![CDATA["+new Date().getTime()+"]]>");
+			buffer.append("</CreateTime>");
+			
+			buffer.append("<MsgType>");
+			buffer.append("<![CDATA[image]]>");
+			buffer.append("</MsgType>");
 
-		// 获取XML根元素
-		Element root = doc.getRootElement();
+			buffer.append("<Image>");
+			buffer.append("<MediaId>");
+			buffer.append("<![CDATA["+fromUserName+"]]>");
+			buffer.append("</MediaId>");
+			buffer.append("</Image>");
+			buffer.append("</xml>");
+			return buffer.toString();
+		} else if (MESSAGE_TEXT.equals(msgType)) {
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("<xml>");
+			buffer.append("<ToUserName>");
+			buffer.append("<![CDATA["+toUserName+"]]>");
+			buffer.append("</ToUserName>");
+			
+			buffer.append("<FromUserName>");
+			buffer.append("<![CDATA["+fromUserName+"]]>");
+			buffer.append("</FromUserName>");
+			
+			buffer.append("<CreateTime>");
+			buffer.append("<![CDATA["+new Date().getTime()+"]]>");
+			buffer.append("</CreateTime>");
+			
+			buffer.append("<MsgType>");
+			buffer.append("<![CDATA[image]]>");
+			buffer.append("</MsgType>");
 
-		// 将根元素的所有节点，放入列表中
-		List<Element> list = root.elements();
+			buffer.append("<Image>");
+			buffer.append("<MediaId>");
+			buffer.append("<![CDATA["+fromUserName+"]]>");
+			buffer.append("</MediaId>");
+			buffer.append("</Image>");
+			buffer.append("</xml>");
+			return buffer.toString();
+		} else if (MESSAGE_TEXT.equals(msgType)) {
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("<xml>");
+			buffer.append("<ToUserName>");
+			buffer.append("<![CDATA["+toUserName+"]]>");
+			buffer.append("</ToUserName>");
+			
+			buffer.append("<FromUserName>");
+			buffer.append("<![CDATA["+fromUserName+"]]>");
+			buffer.append("</FromUserName>");
+			
+			buffer.append("<CreateTime>");
+			buffer.append("<![CDATA["+new Date().getTime()+"]]>");
+			buffer.append("</CreateTime>");
+			
+			buffer.append("<MsgType>");
+			buffer.append("<![CDATA[image]]>");
+			buffer.append("</MsgType>");
 
-		// 遍历list对象，并保存到集合中
-		for (Element element : list) {
-			map.put(element.getName(), element.getText());
+			buffer.append("<Image>");
+			buffer.append("<MediaId>");
+			buffer.append("<![CDATA["+fromUserName+"]]>");
+			buffer.append("</MediaId>");
+			buffer.append("</Image>");
+			buffer.append("</xml>");
+			return buffer.toString();
+		} else {
+			return null;
 		}
-
-		ins.close();
-		return map;
-	}
-
-	/**
-	 * 
-	 * 将文本消息对象转成XML
-	 * 
-	 * @param text
-	 * 
-	 * @return
-	 * 
-	 */
-
-	public static String textMessageToXml(TextMessage textMessage) {
-		XStream xstream = new XStream();
-
-		// 将xml的根节点替换成<xml> 默认为TextMessage的包名
-		xstream.alias("xml", textMessage.getClass());
-		return xstream.toXML(textMessage);
 	}
 
 	/**
@@ -111,28 +209,4 @@ public class MessageUtil {
 		return sb.toString();
 
 	}
-
-	/**
-	 * 
-	 * 初始化回复消息
-	 * 
-	 */
-
-	public static String initText(String toUSerName, String fromUserName, String content) {
-
-		TextMessage text = new TextMessage();
-
-		text.setFromUserName(toUSerName);
-
-		text.setToUserName(fromUserName);
-
-		text.setMsgType(MESSAGE_TEXT);
-
-		text.setCreateTime(new Date().getTime());
-
-		text.setContent(content);
-
-		return MessageUtil.textMessageToXml(text);
-	}
-
 }
