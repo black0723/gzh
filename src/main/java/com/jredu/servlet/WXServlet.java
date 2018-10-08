@@ -67,7 +67,7 @@ public class WXServlet extends HttpServlet {
 					// 判断是否为文本消息类型
 					if (MsgType.equals(MessageUtil.MESSAGE_TEXT)) {
 						if (Content.equals("1")) {
-							message = MessageUtil.initText(ToUserName, FromUserName, "对啊！我也是这么觉得！姜浩帅哭了！");
+							message = MessageUtil.initText(ToUserName, FromUserName, "对啊！我也是这么觉得！帅哭了！");
 						} else if (Content.equals("2")) {
 							message = MessageUtil.initText(ToUserName, FromUserName, "好可怜啊！你年级轻轻地就瞎了！");
 						} else if (Content.equals("?") || Content.equals("？")) {
