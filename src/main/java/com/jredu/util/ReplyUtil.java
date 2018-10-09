@@ -1,12 +1,13 @@
 package com.jredu.util;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.jredu.entity.TextMessage;
 
-public class MessageUtil {
+public class ReplyUtil {
 
 	public static final String MESSAGE_TEXT = "text";
 	public static final String MESSAGE_IMAGE = "image";
@@ -32,6 +33,7 @@ public class MessageUtil {
 	 * @return
 	 */
 	public static String msgTemplate(Map<String, String> map, List<Map<String, String>> news) {
+		
 		// 从集合中，获取XML各个节点的内容
 		String toUserName = map.get("ToUserName");
 		String fromUserName = map.get("FromUserName");
@@ -46,32 +48,27 @@ public class MessageUtil {
 		String hQMusicUrl = map.get("HQMusicUrl ");
 		String thumbMediaId = map.get("ThumbMediaId ");
 
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("<xml>");
-		buffer.append("<ToUserName>");
-		buffer.append("<![CDATA[" + toUserName + "]]>");
-		buffer.append("</ToUserName>");
-
-		buffer.append("<FromUserName>");
-		buffer.append("<![CDATA[" + fromUserName + "]]>");
-		buffer.append("</FromUserName>");
-
-		buffer.append("<CreateTime>");
-		buffer.append("<![CDATA[" + new Date().getTime() + "]]>");
-		buffer.append("</CreateTime>");
-
-		buffer.append("<MsgType>");
-		buffer.append("<![CDATA[" + msgType + "]]>");
-		buffer.append("</MsgType>");
-
+		Map<String, String> options = new HashMap<>();
+		options.put("toUserName", fromUserName);
+		options.put("fromUserName", toUserName);
+		options.put("createTime", System.currentTimeMillis()+"");
+		options.put("msgType", "text");
+		
+		String message = "您在说什么，我听不懂？";
+		//判断用户发送的消息是否是文本消息
 		if (MESSAGE_TEXT.equals(msgType)) {
-			TextMessage message = new TextMessage(toUserName, fromUserName, new Date().getTime(), msgType);
-			message.setContent(content);
-			return XmlUtil.textMessageToXml(message);
+			//判断用户发送的消息内容具体是什么
+			if (content.equals("1")) {
+				message = "大吉大利，今晚吃鸡";
+			} else if (content.equals("2")) {
+				message = "落地成盒";
+			} else if (content.contains("爱")) {
+				message = "我爱你~";
+			} 
 		} else if (MESSAGE_IMAGE.equals(msgType)) {
-			buffer.append("<Image><MediaId>");
-			buffer.append("<![CDATA[" + mediaId + "]]>");
-			buffer.append("</MediaId></Image>");
+			options.put("msgType", "image");
+			options.put("mediaId", mediaId);
+			options.put("msgType", "image");
 		} else if (MESSAGE_VOICE.equals(msgType)) {
 			buffer.append("<Voice><MediaId>");
 			buffer.append("<![CDATA[" + mediaId + "]]>");
