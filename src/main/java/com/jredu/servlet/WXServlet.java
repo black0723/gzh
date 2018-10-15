@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.jredu.util.CheckUtil;
 import com.jredu.util.MessageUtil;
-import com.jredu.util.ReplyUtil;
 import com.jredu.util.XmlUtil;
 
 @WebServlet("/WXServlet")
@@ -55,11 +54,11 @@ public class WXServlet extends HttpServlet {
 			} else {
 				// 将request请求，传到Message工具类的转换方法中，返回接收到的Map对象
 				try {
-					//微信返回来的xml数据被序列化为map
+					//微信给我们返回来的xml数据被序列化为map
 					Map<String, String> map = XmlUtil.xmlToMap(request);
-					//我们提交给微信的xml文本
-					String message = ReplyUtil.setReplyMsg(map);
-					System.out.println("message-->" + message);
+					//我们发给微信的xml文本
+					String message = MessageUtil.setReplyMsg(map);
+					System.out.println("我们发给微信的xml文本-->\r\n"+message);
 					
 					out.println(message);
 				} catch (Exception e) {

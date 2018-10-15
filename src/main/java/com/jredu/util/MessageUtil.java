@@ -1,13 +1,15 @@
 package com.jredu.util;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.jredu.entity.TextMessage;
 
 /**
- * 发送给微信服务器的消息模板
+ * 发送给微信服务器的消息处理
+ * 
  * @author Administrator
  *
  */
@@ -33,23 +35,24 @@ public class MessageUtil {
 	/**
 	 * 发送给微信服务器的消息模板
 	 * 
-	 * @param message
+	 * @param wxMap 微信返给我们的map
+	 * @param news  图文消息的map
 	 * @return
 	 */
-	public static String msgTemplate(Map<String, String> map, List<Map<String, String>> news) {
+	public static String getMsgTemplate(Map<String, String> wxMap, List<Map<String, String>> wxMapNews) {
 		// 从集合中，获取XML各个节点的内容
-		String toUserName = map.get("ToUserName");
-		String fromUserName = map.get("FromUserName");
-		String createTime = map.get("CreateTime");
-		String msgType = map.get("MsgType");
-		String content = map.get("Content");
-		String msgId = map.get("MsgId ");
-		String mediaId = map.get("MediaId ");
-		String title = map.get("Title ");
-		String description = map.get("Description ");
-		String musicUrl = map.get("MusicUrl ");
-		String hQMusicUrl = map.get("HQMusicUrl ");
-		String thumbMediaId = map.get("ThumbMediaId ");
+		String toUserName = wxMap.get("ToUserName");
+		String fromUserName = wxMap.get("FromUserName");
+		String createTime = wxMap.get("CreateTime");
+		String msgType = wxMap.get("MsgType");
+		String content = wxMap.get("Content");
+		String msgId = wxMap.get("MsgId ");
+		String mediaId = wxMap.get("MediaId ");
+		String title = wxMap.get("Title ");
+		String description = wxMap.get("Description ");
+		String musicUrl = wxMap.get("MusicUrl ");
+		String hQMusicUrl = wxMap.get("HQMusicUrl ");
+		String thumbMediaId = wxMap.get("ThumbMediaId ");
 
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("<xml>");
@@ -97,9 +100,9 @@ public class MessageUtil {
 			buffer.append("<ThumbMediaId><![CDATA[" + thumbMediaId + "]]></ThumbMediaId>");
 			buffer.append("</Music>");
 		} else if (MESSAGE_NEWS.equals(msgType)) {
-			buffer.append("<ArticleCount>" + news.size() + "</ArticleCount>");
+			buffer.append("<ArticleCount>" + wxMapNews.size() + "</ArticleCount>");
 			buffer.append("<Articles>");
-			for (Map<String, String> item : news) {
+			for (Map<String, String> item : wxMapNews) {
 				buffer.append("<item>");
 				buffer.append("<Title><![CDATA[" + item.get("Title") + "]]></Title>");
 				buffer.append("<Title><![CDATA[" + item.get("Description") + "]]></Title>");
@@ -111,6 +114,69 @@ public class MessageUtil {
 		}
 		buffer.append("</xml>");
 		return buffer.toString();
+	}
+
+	/**
+	 * 根据用户的回复 设置发送给微信服务器的XML内容
+	 * 
+	 * @param message
+	 * @return
+	 */
+	public static String setReplyMsg(Map<String, String> map) {
+
+		// 从集合中，获取XML各个节点的内容
+		String toUserName = map.get("ToUserName");
+		String fromUserName = map.get("FromUserName");
+		String createTime = map.get("CreateTime");
+		String msgType = map.get("MsgType");
+		String content = map.get("Content");
+		String msgId = map.get("MsgId ");
+		String mediaId = map.get("MediaId ");
+		String title = map.get("Title ");
+		String description = map.get("Description ");
+		String musicUrl = map.get("MusicUrl ");
+		String hQMusicUrl = map.get("HQMusicUrl ");
+		String thumbMediaId = map.get("ThumbMediaId ");
+
+		Map<String, String> options = new HashMap<>();
+		options.put("ToUserName", fromUserName);
+		options.put("FromUserName", toUserName);
+		options.put("CreateTime", System.currentTimeMillis() + "");
+		options.put("MsgType", "text");
+
+		String message = "您在说什么，我听不懂？";
+		// 判断用户发送的消息是否是文本消息
+		if (MESSAGE_TEXT.equals(msgType)) {
+			// 判断用户发送的消息内容具体是什么
+			if (content.equals("1")) {
+				message = "大吉大利，今晚吃鸡";
+			} else if (content.equals("2")) {
+				message = "落地成盒";
+			} else if (content.contains("爱")) {
+				message = "我爱你~";
+			}
+		} else if (MESSAGE_IMAGE.equals(msgType)) {
+
+		} else if (MESSAGE_VOICE.equals(msgType)) {
+
+		} else if (MESSAGE_VIDEO.equals(msgType)) {
+
+		} else if (MESSAGE_MUSIC.equals(msgType)) {
+
+		} else if (MESSAGE_NEWS.equals(msgType)) {
+
+		} else if (msgType.equals(MessageUtil.MESSAGE_EVENT)) {// 判断是否为事件类型
+			// 从集合中，或许是哪一种事件传入
+			String eventType = map.get("Event");
+			// 关注事件
+			if (eventType.equals(MessageUtil.MESSAGE_SUBSCRIBE)) {
+				// message = MessageUtil.initText(toUserName, fromUserName,
+				// MessageUtil.menuText());
+			}
+		}
+
+		options.put("Content", message);
+		return MessageUtil.getMsgTemplate(options, null);
 	}
 
 	/**
