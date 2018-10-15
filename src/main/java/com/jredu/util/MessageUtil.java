@@ -6,6 +6,11 @@ import java.util.Map;
 
 import com.jredu.entity.TextMessage;
 
+/**
+ * 发送给微信服务器的消息模板
+ * @author Administrator
+ *
+ */
 public class MessageUtil {
 
 	public static final String MESSAGE_TEXT = "text";
@@ -26,7 +31,7 @@ public class MessageUtil {
 	public static final String MESSAGE_SCAN = "SCAN";
 
 	/**
-	 * 消息模板
+	 * 发送给微信服务器的消息模板
 	 * 
 	 * @param message
 	 * @return

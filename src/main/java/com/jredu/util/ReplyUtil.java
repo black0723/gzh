@@ -7,6 +7,11 @@ import java.util.Map;
 
 import com.jredu.entity.TextMessage;
 
+/**
+ * 根据用户输入的信息，回复给用户不同的内容
+ * @author Administrator
+ *
+ */
 public class ReplyUtil {
 
 	public static final String MESSAGE_TEXT = "text";
@@ -32,7 +37,7 @@ public class ReplyUtil {
 	 * @param message
 	 * @return
 	 */
-	public static String msgTemplate(Map<String, String> map, List<Map<String, String>> news) {
+	public static String setReplyMsg(Map<String, String> map) {
 		
 		// 从集合中，获取XML各个节点的内容
 		String toUserName = map.get("ToUserName");
@@ -66,43 +71,25 @@ public class ReplyUtil {
 				message = "我爱你~";
 			} 
 		} else if (MESSAGE_IMAGE.equals(msgType)) {
-			options.put("msgType", "image");
-			options.put("mediaId", mediaId);
-			options.put("msgType", "image");
+			
 		} else if (MESSAGE_VOICE.equals(msgType)) {
-			buffer.append("<Voice><MediaId>");
-			buffer.append("<![CDATA[" + mediaId + "]]>");
-			buffer.append("</MediaId></Voice>");
+
 		} else if (MESSAGE_VIDEO.equals(msgType)) {
-			buffer.append("<Video>");
-			buffer.append("<MediaId><![CDATA[" + mediaId + "]]></MediaId>");
-			buffer.append("<Title><![CDATA[" + title + "]]></Title>");
-			buffer.append("<Description><![CDATA[" + description + "]]></Description>");
-			buffer.append("</Video>");
+
 		} else if (MESSAGE_MUSIC.equals(msgType)) {
-			buffer.append("<Music>");
-			buffer.append("<MediaId><![CDATA[" + mediaId + "]]></MediaId>");
-			buffer.append("<Title><![CDATA[" + title + "]]></Title>");
-			buffer.append("<Description><![CDATA[" + description + "]]></Description>");
-			buffer.append("<MusicUrl><![CDATA[" + musicUrl + "]]></MusicUrl>");
-			buffer.append("<HQMusicUrl><![CDATA[" + hQMusicUrl + "]]></HQMusicUrl>");
-			buffer.append("<ThumbMediaId><![CDATA[" + thumbMediaId + "]]></ThumbMediaId>");
-			buffer.append("</Music>");
+			
 		} else if (MESSAGE_NEWS.equals(msgType)) {
-			buffer.append("<ArticleCount>" + news.size() + "</ArticleCount>");
-			buffer.append("<Articles>");
-			for (Map<String, String> item : news) {
-				buffer.append("<item>");
-				buffer.append("<Title><![CDATA[" + item.get("Title") + "]]></Title>");
-				buffer.append("<Title><![CDATA[" + item.get("Description") + "]]></Title>");
-				buffer.append("<Title><![CDATA[" + item.get("PicUrl") + "]]></Title>");
-				buffer.append("<Title><![CDATA[" + item.get("Url") + "]]></Title>");
-				buffer.append("</item>");
+			
+		}else if (msgType.equals(MessageUtil.MESSAGE_EVENT)) {// 判断是否为事件类型
+			// 从集合中，或许是哪一种事件传入
+			String eventType = map.get("Event");
+			// 关注事件
+			if (eventType.equals(MessageUtil.MESSAGE_SUBSCRIBE)) {
+				//message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
 			}
-			buffer.append("</Articles>");
 		}
-		buffer.append("</xml>");
-		return buffer.toString();
+		
+		return content;
 	}
 
 	/**

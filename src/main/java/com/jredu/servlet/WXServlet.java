@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.jredu.util.CheckUtil;
 import com.jredu.util.MessageUtil;
+import com.jredu.util.ReplyUtil;
 import com.jredu.util.XmlUtil;
 
 @WebServlet("/WXServlet")
@@ -54,34 +55,12 @@ public class WXServlet extends HttpServlet {
 			} else {
 				// 将request请求，传到Message工具类的转换方法中，返回接收到的Map对象
 				try {
-					//微信返回来的xml数据
+					//微信返回来的xml数据被序列化为map
 					Map<String, String> map = XmlUtil.xmlToMap(request);
-					
-					System.out.println("Content-->" + Content);
-
-					String message = null;
-					// 判断是否为文本消息类型
-					if (MsgType.equals(MessageUtil.MESSAGE_TEXT)) {
-						if (Content.equals("1")) {
-							message = MessageUtil.initText(ToUserName, FromUserName, "对啊！我也是这么觉得！帅哭了！");
-						} else if (Content.equals("2")) {
-							message = MessageUtil.initText(ToUserName, FromUserName, "好可怜啊！你年级轻轻地就瞎了！");
-						} else if (Content.equals("?") || Content.equals("？")) {
-							message = MessageUtil.initText(ToUserName, FromUserName, MessageUtil.menuText());
-						} else {
-							message = MessageUtil.initText(ToUserName, FromUserName, "没让你选的就别瞎嘚瑟！！！");
-						}
-					} else if (MsgType.equals(MessageUtil.MESSAGE_EVENT)) {// 判断是否为事件类型
-						// 从集合中，或许是哪一种事件传入
-						String eventType = map.get("Event");
-
-						// 关注事件
-						if (eventType.equals(MessageUtil.MESSAGE_SUBSCRIBE)) {
-							message = MessageUtil.initText(ToUserName, FromUserName, MessageUtil.menuText());
-						}
-					}
-					//我们提交给微信的xml
+					//我们提交给微信的xml文本
+					String message = ReplyUtil.setReplyMsg(map);
 					System.out.println("message-->" + message);
+					
 					out.println(message);
 				} catch (Exception e) {
 					e.printStackTrace();
