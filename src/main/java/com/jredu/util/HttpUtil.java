@@ -2,7 +2,11 @@ package com.jredu.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Map;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
@@ -15,9 +19,9 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 public class HttpUtil {
-	
+
 	public static String doGet(String url, String charset) {
-		
+
 		/* 1 生成 HttpClinet 对象并设置参数 */
 		HttpClient httpClient = new HttpClient();
 		// 设置 Http 连接超时为5秒
@@ -71,14 +75,14 @@ public class HttpUtil {
 		return response;
 	}
 
-	/** 
-	 * 执行一个HTTP POST请求，返回请求响应的HTML 
-	 *  
-	 * @param url  请求的URL地址 
-	 * @param params  请求的查询参数,可以为null 
-	 * @param charset 字符集 
-	 * @param pretty 是否美化 
-	 * @return 返回请求响应的HTML 
+	/**
+	 * 执行一个HTTP POST请求，返回请求响应的HTML
+	 * 
+	 * @param url     请求的URL地址
+	 * @param params  请求的查询参数,可以为null
+	 * @param charset 字符集
+	 * @param pretty  是否美化
+	 * @return 返回请求响应的HTML
 	 */
 	public static String doPost(String url, Map<String, Object> _params, String charset, boolean pretty) {
 
@@ -93,35 +97,15 @@ public class HttpUtil {
 			}
 		}
 
-		// 设置Http Post数据 方法二
-		// if(_params != null) {
-		// NameValuePair[] pairs = new NameValuePair[_params.size()];//纯参数了，键值对
-		// int i = 0;
-		// for (Map.Entry<String, Object> entry : _params.entrySet()) {
-		// pairs[i] = new NameValuePair(entry.getKey(),
-		// String.valueOf(entry.getValue()));
-		// i++;
-		// }
-		// method.addParameters(pairs);
-		// }
-
 		method.setRequestHeader("Accept", "*/*");
 		// method.setRequestHeader("Accept-Encoding", "gzip, deflate");
-		method.setRequestHeader("Accept-Language", "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7");
-		method.setRequestHeader("Cache-Control", "no-cache");
-		method.setRequestHeader("Connection", "keep-alive");
+		// method.setRequestHeader("Accept-Language",
+		// "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7");
+		// method.setRequestHeader("Cache-Control", "no-cache");
+		// method.setRequestHeader("Connection", "keep-alive");
 		method.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-		method.setRequestHeader("Cookie",
-				"cnkiUserKey=292937db-cee9-2640-474c-8eff529e516e; UM_distinctid=1646477e5e167e-000db4ac18884b-5b193413-1fa400-1646477e5e2d64; Ecp_ClientId=3180806092301107320; Captcha=b650cff764fb8d1c; ASP.NET_SessionId=3bw1zfhidgpeofqe2aaexauf; TTKN.AAMS.V1.0.0=f297f55b6efb45cc8485932067285ada; .TTKNOA=58A8D11C3FEA31EC56D0B45B73B19B298D478E90C6F7EB335EA74D5DB712310EB49A01D848BCB3230530FB655F5AA615C9C279F99DFEE6F36DD30BA23FCE6A6B085C8000BA14522B4822957F51E622E5107E1690CF8EE4455D291D83F9A87FA083578A1D17CEEC498A3AFCF64D5FE4832DE1455D7628FDFA7AD0A51BF014657EAB15824F44C100DEECBC2B0143113845B88FCF3567A6A54D95A807AE285A146E014E5CC209E53845419FD0BA31C5F4EC9DE7C155EE7704DB8BE03B21C1237F4544759C0F6D462F9E51E23543663B1F8DD5B55D46608201AEAC7B9E19C1B2F0A0E81332A54049E5E1C39EC311435E9B4AD30D7A53F4C338FB90617660352639DB28FE17F41B6AACA2762E9AC5A1BEF8EC536D40D1676E00214A0643791138059B47C70D83179BF4B4A14DAC55964CAEC8394E97D7CD4FFB4B706A949A1B3F49D223B95F10AD9100C060033010EC12225413B55EC4A7D610E273E4A0C8F7E1B8A3");
-		method.setRequestHeader("Host", "oa.cnki.net");
-		method.setRequestHeader("Origin", "http://oa.cnki.net");
-		method.setRequestHeader("Referer",
-				"http://oa.cnki.net/web/TTKN/DailyWork/TouchManList_New.aspx?PageID=3&Height=917&Width=1920&UserID=5458&VisitID=6964813&Iden=328");
-		method.setRequestHeader("User-Agent",
-				"Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36");
-		method.setRequestHeader("X-MicrosoftAjax", "Delta=true");
-		method.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
+		// method.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		// // 设置发送数据的
 		try {
 			client.executeMethod(method);
 			// System.out.println("method.getStatusCode()-->" + method.getStatusCode());
@@ -150,4 +134,43 @@ public class HttpUtil {
 		// System.out.println("--------------------" + response.toString());
 		return response.toString();
 	}
+
+	/**
+	 * 发送POST请求
+	 * @param action
+	 * @param params
+	 * @return
+	 */
+	public static String doPost2(String action,String params) {
+		//String menu = "{\"button\":[{\"type\":\"click\",\"name\":\"项目管理\",\"key\":\"20_PROMANAGE\"},{\"type\":\"click\",\"name\":\"机构运作\",\"key\":\"30_ORGANIZATION\"},{\"name\":\"日常工作\",\"sub_button\":[{\"type\":\"click\",\"name\":\"待办工单\",\"key\":\"01_WAITING\"},{\"type\":\"click\",\"name\":\"已办工单\",\"key\":\"02_FINISH\"},{\"type\":\"click\",\"name\":\"我的工单\",\"key\":\"03_MYJOB\"},{\"type\":\"click\",\"name\":\"公告消息箱\",\"key\":\"04_MESSAGEBOX\"},{\"type\":\"click\",\"name\":\"签到\",\"key\":\"05_SIGN\"}]}]}";
+		// 此处改为自己想要的结构体，替换即可
+		try {
+			URL url = new URL(action);
+			HttpURLConnection http = (HttpURLConnection) url.openConnection();
+
+			http.setRequestMethod("POST");
+			http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			http.setDoOutput(true);
+			http.setDoInput(true);
+			//System.setProperty("sun.net.client.defaultConnectTimeout", "30000");// 连接超时30秒
+			//System.setProperty("sun.net.client.defaultReadTimeout", "30000"); // 读取超时30秒
+
+			http.connect();
+			OutputStream os = http.getOutputStream();
+			os.write(params.getBytes("UTF-8"));// 传入参数
+			os.flush();
+			os.close();
+
+			InputStream is = http.getInputStream();
+			int size = is.available();
+			byte[] jsonBytes = new byte[size];
+			is.read(jsonBytes);
+			String message = new String(jsonBytes, "UTF-8");
+			return message;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return null;
+	}
+
 }

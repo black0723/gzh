@@ -22,6 +22,37 @@ public class AccessToken {
 	/**
 	 * 用来获取没有过期的access_token
 	 */
+	public static Map<String, Object> fetchAccessToken2() {
+		// 读取本地文件（readAccessToken）
+		Map<String, Object> data = readAccessToken();
+		// - 本地有文件
+		if (data != null) {
+			// - 判断它是否过期(isValidAccessToken)
+			// - 过期了
+			if (!isValidAccessToken(data)) {
+				// - 重新请求获取access_token(getAccessToken)，
+				String accessToken = getAccessToken();
+				// 保存下来覆盖之前的文件（保证文件是唯一的）(saveAccessToken)
+				saveAccessToken(accessToken);
+				return JSON.parseObject(accessToken);
+			} else {
+				// - 没有过期
+				// - 直接使用
+				return data;
+			}
+		} else {
+			// - 本地没有文件
+			// - 发送请求获取access_token(getAccessToken)，
+			String accessToken = getAccessToken();
+			// 保存下来（本地文件）(saveAccessToken)，直接使用
+			saveAccessToken(accessToken);
+			return JSON.parseObject(accessToken);
+		}
+	}
+	
+	/**
+	 * 用来获取没有过期的access_token
+	 */
 	public static String fetchAccessToken() {
 		// 读取本地文件（readAccessToken）
 		Map<String, Object> data = readAccessToken();

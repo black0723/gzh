@@ -7,11 +7,14 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 
 public class FileUtil {
 	public static void writeStringToFile(String filePath, String content) {
+		
 		try {
-			FileWriter fw = new FileWriter(filePath, true);
+			Writer fw = new FileWriter(filePath);
+			//BufferedWriter bw = new BufferedWriter(fw,true); //true 追加
 			BufferedWriter bw = new BufferedWriter(fw);
 			// bw.append("在已有的基础上添加字符串");
 			bw.write(content);// 往已有的文件上添加字符串

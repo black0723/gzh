@@ -137,6 +137,13 @@ public class MessageUtil {
 		String musicUrl = map.get("MusicUrl ");
 		String hQMusicUrl = map.get("HQMusicUrl ");
 		String thumbMediaId = map.get("ThumbMediaId ");
+		String PicUrl = map.get("PicUrl ");
+		String Recognition = map.get("Recognition ");
+
+		String Location_X = map.get("Location_X ");
+		String Location_Y = map.get("Location_Y ");
+		String Scale = map.get("Scale ");
+		String Label = map.get("Label ");
 
 		Map<String, String> options = new HashMap<>();
 		options.put("ToUserName", fromUserName);
@@ -156,22 +163,40 @@ public class MessageUtil {
 				message = "我爱你~";
 			}
 		} else if (MESSAGE_IMAGE.equals(msgType)) {
-
+			options.put("MsgType", "image");
+			options.put("MediaId", mediaId);
+			System.out.println(PicUrl);
 		} else if (MESSAGE_VOICE.equals(msgType)) {
-
+			options.put("MsgType", "voice");
+			options.put("MediaId", mediaId);
+			System.out.println(Recognition);
 		} else if (MESSAGE_VIDEO.equals(msgType)) {
 
 		} else if (MESSAGE_MUSIC.equals(msgType)) {
 
 		} else if (MESSAGE_NEWS.equals(msgType)) {
 
+		} else if (MESSAGE_LOCATION.equals(msgType)) {
+			content = "纬度：" + Location_X + "经度：" + Location_Y + "缩放大小：" + Scale + "位置信息：" + Label;
 		} else if (msgType.equals(MessageUtil.MESSAGE_EVENT)) {// 判断是否为事件类型
 			// 从集合中，或许是哪一种事件传入
 			String eventType = map.get("Event");
-			// 关注事件
+			// 关注事件 //用户订阅事件
 			if (eventType.equals(MessageUtil.MESSAGE_SUBSCRIBE)) {
-				// message = MessageUtil.initText(toUserName, fromUserName,
-				// MessageUtil.menuText());
+				content = "欢迎您的关注~";
+				// EventKey 事件KEY值，qrscene_为前缀，后面为二维码的参数值
+				if (map.get("EventKey") != null) {
+					content = "用户扫描带参数的二维码关注事件";
+				}
+			} else if (eventType.equals(MessageUtil.MESSAGE_UNSUBSCRIBE)) {
+				// 用户取消订阅事件
+				content = "无情取关~";
+			} else if (eventType.equals("SCAN")) {
+				content = "用户已经关注过，再扫描带参数的二维码关注事件";
+			} else if (eventType.equals("LOCATION")) {
+				content = "纬度：" + map.get("Latitude") + "经度：" + map.get("Longitude") + "精度：" + map.get("Precision");
+			} else if (eventType.equals("CLICK")) {
+				content = "您点击了按钮:${message.EventKey}";
 			}
 		}
 
